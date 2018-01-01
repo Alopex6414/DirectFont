@@ -19,9 +19,9 @@
 
 //Macro Definition
 #ifdef	DIRECTFONT_EXPORTS
-#define DIRECTTEXTURE_API	__declspec(dllexport)
+#define DIRECTFONT_API	__declspec(dllexport)
 #else
-#define DIRECTTEXTURE_API	__declspec(dllimport)
+#define DIRECTFONT_API	__declspec(dllimport)
 #endif
 
 #define DIRECTFONT_FORMAT_CENTER		(DT_CENTER)
@@ -31,7 +31,7 @@
 #define DIRECTFONT_FORMAT_BOTTOMRIGHT	(DT_BOTTOM | DT_RIGHT)
 
 //Class Definition
-class DIRECTTEXTURE_API DirectFont
+class DIRECTFONT_API DirectFont
 {
 private:
 	IDirect3DDevice9* m_pD3D9Device;			//The Direct3D 9 Device(D3D9ªÊ÷∆…Ë±∏)
