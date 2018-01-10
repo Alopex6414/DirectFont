@@ -6,8 +6,10 @@
 * @file		DirectFont.h
 * @brief	This File is DirectFont DLL Project.
 * @author	Alopex/Helium
-* @version	v1.00a
-* @date		2017-12-16	v1.00a	alopex	Create This File
+* @version	v1.11a
+* @date		2017-12-16	v1.00a	alopex	Create This File.
+* @date		2018-1-10	v1.10a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
+* @date		2018-1-10	v1.10a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
 */
 #pragma once
 
@@ -36,6 +38,9 @@ class DIRECTFONT_API DirectFont
 private:
 	IDirect3DDevice9* m_pD3D9Device;			//The Direct3D 9 Device(D3D9绘制设备)
 	ID3DXFont* m_pD3D9Font;						//The Direct3D 9 Font(D3D9绘制字体)
+
+	CRITICAL_SECTION m_cs;						//Thread Safe(CriticalSection)
+	bool m_bThreadSafe;							//Thread Safe Status
 
 public:
 	DirectFont();								//DirectFont Constructor Function(构造函数)

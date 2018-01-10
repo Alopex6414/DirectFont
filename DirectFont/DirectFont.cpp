@@ -6,11 +6,14 @@
 * @file		DirectFont.cpp
 * @brief	This File is DirectFont DLL Project.
 * @author	Alopex/Helium
-* @version	v1.00a
-* @date		2017-12-16	v1.00a	alopex	Create This File
+* @version	v1.11a
+* @date		2017-12-16	v1.00a	alopex	Create This File.
+* @date		2018-1-10	v1.10a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
+* @date		2018-1-10	v1.10a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
 */
 #include "DirectCommon.h"
 #include "DirectFont.h"
+#include "DirectThreadSafe.h"
 
 //DirectFont主要用于2D/3D文字绘制
 
@@ -23,6 +26,9 @@
 //------------------------------------------------------------------
 DirectFont::DirectFont()
 {
+	m_bThreadSafe = true;									//线程安全
+	if (m_bThreadSafe) InitializeCriticalSection(&m_cs);	//初始化临界区
+
 	m_pD3D9Device = NULL;			//IDirect3DDevice9接口指针初始化(NULL)
 	m_pD3D9Font = NULL;				//IDirect3DFont9接口指针初始化(NULL)
 }
@@ -37,6 +43,8 @@ DirectFont::DirectFont()
 DirectFont::~DirectFont()
 {
 	SAFE_RELEASE(m_pD3D9Font);		//IDirect3DFont9接口指针释放
+
+	if (m_bThreadSafe) DeleteCriticalSection(&m_cs);	//删除临界区
 }
 
 //------------------------------------------------------------------
@@ -48,6 +56,9 @@ DirectFont::~DirectFont()
 //------------------------------------------------------------------
 DirectFont::DirectFont(IDirect3DDevice9* pD3D9Device)
 {
+	m_bThreadSafe = true;									//线程安全
+	if (m_bThreadSafe) InitializeCriticalSection(&m_cs);	//初始化临界区
+
 	m_pD3D9Device = pD3D9Device;	//IDirect3DDevice9接口指针初始化(NULL)
 	m_pD3D9Font = NULL;				//IDirect3DFont9接口指针初始化(NULL)
 }
@@ -61,6 +72,7 @@ DirectFont::DirectFont(IDirect3DDevice9* pD3D9Device)
 //------------------------------------------------------------------
 IDirect3DDevice9* WINAPI DirectFont::DirectFontGetDevice(void) const
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	return m_pD3D9Device;
 }
 
@@ -73,6 +85,7 @@ IDirect3DDevice9* WINAPI DirectFont::DirectFontGetDevice(void) const
 //------------------------------------------------------------------
 ID3DXFont* WINAPI DirectFont::DirectFontGetFont(void) const
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	return m_pD3D9Font;
 }
 
@@ -85,6 +98,7 @@ ID3DXFont* WINAPI DirectFont::DirectFontGetFont(void) const
 //------------------------------------------------------------------
 void WINAPI DirectFont::DirectFontSetDevice(IDirect3DDevice9* pD3D9Device)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	m_pD3D9Device = pD3D9Device;
 }
 
@@ -97,6 +111,7 @@ void WINAPI DirectFont::DirectFontSetDevice(IDirect3DDevice9* pD3D9Device)
 //------------------------------------------------------------------
 void WINAPI DirectFont::DirectFontSetFont(ID3DXFont* pD3DXFont)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	m_pD3D9Font = pD3DXFont;
 }
 
@@ -109,6 +124,7 @@ void WINAPI DirectFont::DirectFontSetFont(ID3DXFont* pD3DXFont)
 //------------------------------------------------------------------
 void WINAPI DirectFont::DirectFontReset(void)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	SAFE_RELEASE(m_pD3D9Font);
 }
 
@@ -122,6 +138,8 @@ void WINAPI DirectFont::DirectFontReset(void)
 //------------------------------------------------------------------
 HRESULT WINAPI DirectFont::DirectFontInit(void)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	VERIFY(D3DXCreateFont(m_pD3D9Device, 12, 0, 0, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, 0, _T("Consolas"), &m_pD3D9Font));
 
 	return S_OK;
@@ -137,6 +155,8 @@ HRESULT WINAPI DirectFont::DirectFontInit(void)
 //------------------------------------------------------------------
 HRESULT WINAPI DirectFont::DirectFontInit(int nFontSize)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	VERIFY(D3DXCreateFont(m_pD3D9Device, nFontSize, 0, 0, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, 0, _T("Consolas"), &m_pD3D9Font));
 
 	return S_OK;
@@ -152,6 +172,8 @@ HRESULT WINAPI DirectFont::DirectFontInit(int nFontSize)
 //------------------------------------------------------------------
 HRESULT WINAPI DirectFont::DirectFontInit(int nFontSize, LPWSTR lpszFontType)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+
 	VERIFY(D3DXCreateFont(m_pD3D9Device, nFontSize, 0, 0, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, 0, lpszFontType, &m_pD3D9Font));
 	
 	return S_OK;
@@ -167,6 +189,7 @@ HRESULT WINAPI DirectFont::DirectFontInit(int nFontSize, LPWSTR lpszFontType)
 //---------------------------------------------------------------------------------------------------
 void WINAPI DirectFont::DirectFontDrawText(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color)
 {
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
 	RECT Rect;
 
 	GetClientRect(hWnd, &Rect);
