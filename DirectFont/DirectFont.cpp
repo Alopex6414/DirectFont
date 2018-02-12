@@ -10,6 +10,7 @@
 * @date		2017-12-16	v1.00a	alopex	Create This File.
 * @date		2018-1-10	v1.10a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
 * @date		2018-1-10	v1.10a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
+* @date		2018-2-12	v1.11a	alopex	Add Reset Device & Definion of DirectFont Colors.
 */
 #include "DirectCommon.h"
 #include "DirectFont.h"
@@ -122,10 +123,10 @@ void WINAPI DirectFont::DirectFontSetFont(ID3DXFont* pD3DXFont)
 // @Para: None
 // @Return: None
 //------------------------------------------------------------------
-void WINAPI DirectFont::DirectFontReset(void)
+HRESULT WINAPI DirectFont::DirectFontReset(void)
 {
 	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
-	SAFE_RELEASE(m_pD3D9Font);
+	return m_pD3D9Font->OnLostDevice();
 }
 
 //------------------------------------------------------------------
@@ -181,7 +182,7 @@ HRESULT WINAPI DirectFont::DirectFontInit(int nFontSize, LPWSTR lpszFontType)
 
 //---------------------------------------------------------------------------------------------------
 // @Function:	 DirectFontDrawText(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color)
-// @Purpose: DirectFont初始化D3D9字体
+// @Purpose: DirectFont绘制字体
 // @Since: v1.00a
 // @Para: int nFontSize
 // @Para: LPWSTR lpszFontType
@@ -194,4 +195,38 @@ void WINAPI DirectFont::DirectFontDrawText(HWND hWnd, LPCWSTR lpcszStr, DWORD Fo
 
 	GetClientRect(hWnd, &Rect);
 	m_pD3D9Font->DrawText(NULL, lpcszStr, -1, &Rect, Format, Color);
+}
+
+//---------------------------------------------------------------------------------------------------
+// @Function:	 DirectFontDrawTextA(HWND hWnd, LPCSTR lpcszStr, DWORD Format, D3DCOLOR Color)
+// @Purpose: DirectFont绘制字体
+// @Since: v1.00a
+// @Para: int nFontSize
+// @Para: LPSTR lpszFontType
+// @Return: None
+//---------------------------------------------------------------------------------------------------
+void WINAPI DirectFont::DirectFontDrawTextA(HWND hWnd, LPCSTR lpcszStr, DWORD Format, D3DCOLOR Color)
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	RECT Rect;
+
+	GetClientRect(hWnd, &Rect);
+	m_pD3D9Font->DrawTextA(NULL, lpcszStr, -1, &Rect, Format, Color);
+}
+
+//---------------------------------------------------------------------------------------------------
+// @Function:	 DirectFontDrawTextW(HWND hWnd, LPCSTR lpcszStr, DWORD Format, D3DCOLOR Color)
+// @Purpose: DirectFont绘制字体
+// @Since: v1.00a
+// @Para: int nFontSize
+// @Para: LPWSTR lpszFontType
+// @Return: None
+//---------------------------------------------------------------------------------------------------
+void WINAPI DirectFont::DirectFontDrawTextW(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color)
+{
+	DirectThreadSafe ThreadSafe(&m_cs, m_bThreadSafe);
+	RECT Rect;
+
+	GetClientRect(hWnd, &Rect);
+	m_pD3D9Font->DrawTextW(NULL, lpcszStr, -1, &Rect, Format, Color);
 }

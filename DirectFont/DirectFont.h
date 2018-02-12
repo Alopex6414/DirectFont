@@ -10,6 +10,7 @@
 * @date		2017-12-16	v1.00a	alopex	Create This File.
 * @date		2018-1-10	v1.10a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
 * @date		2018-1-10	v1.10a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
+* @date		2018-2-12	v1.11a	alopex	Add Reset Device & Definion of DirectFont Colors.
 */
 #pragma once
 
@@ -31,6 +32,12 @@
 #define DIRECTFONT_FORMAT_TOPRIGHT		(DT_TOP | DT_RIGHT)
 #define DIRECTFONT_FORMAT_BOTTOMLEFT	(DT_BOTTOM | DT_LEFT)
 #define DIRECTFONT_FORMAT_BOTTOMRIGHT	(DT_BOTTOM | DT_RIGHT)
+
+#define DIRECTFONT_D3DXCOLOR_WHITE		(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f))
+#define DIRECTFONT_D3DXCOLOR_RED		(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f))
+#define DIRECTFONT_D3DXCOLOR_GREEN		(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f))
+#define DIRECTFONT_D3DXCOLOR_BLUE		(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f))
+#define DIRECTFONT_D3DXCOLOR_YELLOW		(D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f))
 
 //Class Definition
 class DIRECTFONT_API DirectFont
@@ -58,7 +65,7 @@ public:
 	void WINAPI DirectFontSetFont(ID3DXFont* pD3DXFont);				//DirectFont Set D3DX Font(设置D3D9字体)
 
 	//重置
-	virtual void WINAPI DirectFontReset(void);							//DirectFont Reset D3DX Font(重置D3DX字体)
+	virtual HRESULT WINAPI DirectFontReset(void);						//DirectFont Reset D3DX Font(重置D3DX字体)(丢失设备重置)
 
 	//初始化
 	virtual HRESULT WINAPI DirectFontInit(void);										//DirectFont Create Font(DirectFont初始化)
@@ -67,7 +74,8 @@ public:
 
 	//绘制
 	virtual void WINAPI DirectFontDrawText(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color);			//DirectFont Draw Text(DirectFont绘制)
-
+	virtual void WINAPI DirectFontDrawTextA(HWND hWnd, LPCSTR lpcszStr, DWORD Format, D3DCOLOR Color);			//DirectFont Draw Text(DirectFont绘制)
+	virtual void WINAPI DirectFontDrawTextW(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color);			//DirectFont Draw Text(DirectFont绘制)
 };
 
 #endif
