@@ -6,11 +6,12 @@
 * @file		DirectFont.h
 * @brief	This File is DirectFont DLL Project.
 * @author	Alopex/Helium
-* @version	v1.11a
+* @version	v1.12a
 * @date		2017-12-16	v1.00a	alopex	Create This File.
 * @date		2018-1-10	v1.10a	alopex	Code Add dxerr & d3dcompiler Library and Modify Verify.
 * @date		2018-1-10	v1.10a	alopex	Add Thread Safe File & Variable(DirectThreadSafe).
 * @date		2018-2-12	v1.11a	alopex	Add Reset Device & Definion of DirectFont Colors.
+* @date		2018-4-12	v1.12a	alopex	Add Macro Call Mode.
 */
 #pragma once
 
@@ -26,6 +27,8 @@
 #else
 #define DIRECTFONT_API	__declspec(dllimport)
 #endif
+
+#define DIRECTFONT_CALLMODE	__stdcall
 
 #define DIRECTFONT_FORMAT_CENTER		(DT_CENTER)
 #define DIRECTFONT_FORMAT_TOPLEFT		(DT_TOP | DT_LEFT)
@@ -57,25 +60,25 @@ public:
 	DirectFont(IDirect3DDevice9* pD3D9Device);	//DirectFont Constructor Function(构造函数)
 
 	//访问
-	IDirect3DDevice9* WINAPI DirectFontGetDevice(void) const;			//DirectFont Get D3D9 Device(获取D3D9设备)
-	ID3DXFont* WINAPI DirectFontGetFont(void) const;					//DirectFont Get D3D9 Font(获取D3D9字体)
+	IDirect3DDevice9* DIRECTFONT_CALLMODE DirectFontGetDevice(void) const;			//DirectFont Get D3D9 Device(获取D3D9设备)
+	ID3DXFont* DIRECTFONT_CALLMODE DirectFontGetFont(void) const;					//DirectFont Get D3D9 Font(获取D3D9字体)
 
 	//控制
-	void WINAPI DirectFontSetDevice(IDirect3DDevice9* pD3D9Device);		//DirectFont Set D3D9 Device(设置D3D9设备)
-	void WINAPI DirectFontSetFont(ID3DXFont* pD3DXFont);				//DirectFont Set D3DX Font(设置D3D9字体)
+	void DIRECTFONT_CALLMODE DirectFontSetDevice(IDirect3DDevice9* pD3D9Device);	//DirectFont Set D3D9 Device(设置D3D9设备)
+	void DIRECTFONT_CALLMODE DirectFontSetFont(ID3DXFont* pD3DXFont);				//DirectFont Set D3DX Font(设置D3D9字体)
 
 	//重置
-	virtual HRESULT WINAPI DirectFontReset(void);						//DirectFont Reset D3DX Font(重置D3DX字体)(丢失设备重置)
+	virtual HRESULT DIRECTFONT_CALLMODE DirectFontReset(void);						//DirectFont Reset D3DX Font(重置D3DX字体)(丢失设备重置)
 
 	//初始化
-	virtual HRESULT WINAPI DirectFontInit(void);										//DirectFont Create Font(DirectFont初始化)
-	virtual HRESULT WINAPI DirectFontInit(int nFontSize);								//DirectFont Create Font(DirectFont初始化)
-	virtual HRESULT WINAPI DirectFontInit(int nFontSize, LPWSTR lpszFontType);			//DirectFont Create Font(DirectFont初始化)
+	virtual HRESULT DIRECTFONT_CALLMODE DirectFontInit(void);										//DirectFont Create Font(DirectFont初始化)
+	virtual HRESULT DIRECTFONT_CALLMODE DirectFontInit(int nFontSize);								//DirectFont Create Font(DirectFont初始化)
+	virtual HRESULT DIRECTFONT_CALLMODE DirectFontInit(int nFontSize, LPWSTR lpszFontType);			//DirectFont Create Font(DirectFont初始化)
 
 	//绘制
-	virtual void WINAPI DirectFontDrawText(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color);			//DirectFont Draw Text(DirectFont绘制)
-	virtual void WINAPI DirectFontDrawTextA(HWND hWnd, LPCSTR lpcszStr, DWORD Format, D3DCOLOR Color);			//DirectFont Draw Text(DirectFont绘制)
-	virtual void WINAPI DirectFontDrawTextW(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color);			//DirectFont Draw Text(DirectFont绘制)
+	virtual void DIRECTFONT_CALLMODE DirectFontDrawText(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color);			//DirectFont Draw Text(DirectFont绘制)
+	virtual void DIRECTFONT_CALLMODE DirectFontDrawTextA(HWND hWnd, LPCSTR lpcszStr, DWORD Format, D3DCOLOR Color);			//DirectFont Draw Text(DirectFont绘制)
+	virtual void DIRECTFONT_CALLMODE DirectFontDrawTextW(HWND hWnd, LPCWSTR lpcszStr, DWORD Format, D3DCOLOR Color);		//DirectFont Draw Text(DirectFont绘制)
 };
 
 #endif
